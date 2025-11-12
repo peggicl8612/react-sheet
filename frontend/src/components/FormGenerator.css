@@ -1,0 +1,309 @@
+.form-generator {
+    background: rgb(149, 172, 171);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1440px;
+    min-height: 100vh
+ 
+  
+  .form-section {
+     width: 100%;
+    max-width: 1440px;
+   }
+
+   .form-section label {
+    margin: 0;
+   }
+  
+  .form-section-title {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+   }
+  
+  .form-section input,
+  .form-section textarea {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .form-input {
+    width: 100%;
+    max-width: 1440px;    background: #dbe2e2;
+    color: #000;
+  }
+  
+  .form-section input:focus,
+  .form-section textarea:focus {
+    outline: none;
+    border-color: #dccaa8;
+  }
+  
+  .questions-section {
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+  }
+  
+  .section-header {
+    text-align: right;
+    margin-bottom: 20px;
+  }
+  
+   
+  
+  .btn-add {
+    background: #485252;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+  
+  .btn-add:hover {
+    background: #52606c;
+  }
+  
+  .question-item {
+    background: #dbe2e2;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  
+  .question-number {
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+  }
+  
+  .btn-remove {
+    background: #be7179;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0;
+    font-size: 12px;
+  }
+  
+  .btn-remove:hover {
+    background: #ee5a6f;
+  }
+  
+  .question-input {
+    width: 100%;
+    margin-bottom: 10px;
+    background: #94a1a1;
+     border-radius: 4px;
+    padding: 2px 6px;
+    height: 30px;
+    color: #000;
+  }
+  
+  .question-type {
+    background: #485252;
+    padding: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .btn-submit {
+    background: #485252;
+     color: #fff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+  }
+  
+  .btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    background: #ffe6e6;
+    color: #d63031;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #c09292;
+  }
+  
+  .success-message {
+    background: #dde5de;
+    padding: 20px;
+    border-radius: 8px;
+     margin-top: 20px;
+  }
+  
+  .success-message h3 {
+    color: #516a52;
+    margin-bottom: 10px;
+  }
+  
+  .success-message p {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .form-link {
+    display: block;
+    color: #839090;
+    text-decoration: none;
+    word-break: break-all;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+  }
+  
+  .form-link:hover {
+    text-decoration: underline;
+  }
+  
+  .btn-copy {
+    background: #516a52;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .btn-copy:hover {
+    background: #79987a;
+    transform: translateY(-2px)
+  }
+
+  .auth-prompt {
+    text-align: center;
+    padding: 40px;
+  }
+  
+  .auth-prompt h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .auth-prompt p {
+    color: #666;
+    margin-bottom: 30px;
+  }
+  
+  .btn-google-auth {
+    background: #dccaa8;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn-google-auth:hover {
+    background: #000;
+  }
+
+  /* 選項相關樣式 */
+  .options-section {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .options-label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .option-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .option-input {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+
+  .option-input:focus {
+    outline: none;
+    border-color: #dccaa8;
+  }
+
+  .btn-remove-option {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: background 0.3s;
+  }
+
+  .btn-remove-option:hover {
+    background: #ee5a6f;
+  }
+
+  .btn-add-option {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 5px;
+    transition: background 0.3s;
+  }
+
+  .btn-add-option:hover {
+    background: #5568d3;
+  }
