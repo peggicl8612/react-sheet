@@ -151,10 +151,11 @@ async function addQuestionToForm(formId: string, question: any, forms: any, inde
         console.log('Adding question:', {
             type: question.type,
             text: question.text,
-            options: question.options
+            options: question.options,
+            required: question.required
         })
 
-        const questionItem = getQuestionItem(question.type, question.options)
+        const questionItem = getQuestionItem(question.type, question.options, question.required !== undefined ? question.required : false)
         console.log('Generated questionItem:', JSON.stringify(questionItem, null, 2))
 
         const questionConfig = {
@@ -181,12 +182,12 @@ async function addQuestionToForm(formId: string, question: any, forms: any, inde
     }
 }
 
-function getQuestionItem(type: string, options?: string[]) {
+function getQuestionItem(type: string, options?: string[], required?: boolean) {
     switch (type) {
         case 'text':
             return {
                 question: {
-                    required: false,
+                    required: required,
                     textQuestion: {}
                 }
             }
@@ -206,7 +207,7 @@ function getQuestionItem(type: string, options?: string[]) {
             
             return {
                 question: {
-                    required: false,
+                    required: required,
                     choiceQuestion: {
                         type: 'RADIO',  // 注意：這裡是 RADIO，不是 MULTIPLE_CHOICE
                         options: radioOptions.length > 0
@@ -230,7 +231,7 @@ function getQuestionItem(type: string, options?: string[]) {
             
             return {
                 question: {
-                    required: false,
+                    required: required,
                     choiceQuestion: {
                         type: 'CHECKBOX',
                         options: checkboxOptions.length > 0
@@ -239,10 +240,23 @@ function getQuestionItem(type: string, options?: string[]) {
                     }
                 }
             }
+        case 'date': 
+            return {
+                question: {
+                    required: required,
+                    dateQuestion: {
+                        includeTime: false,
+                        // 包含年月日
+                        includeYear: true,
+                     }
+                }
+            }
+        
+       
         default: 
             return {
                 question: {
-                    required: false,
+                    required: required,
                     textQuestion: {}
                 }
             }

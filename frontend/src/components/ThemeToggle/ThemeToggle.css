@@ -1,0 +1,350 @@
+.theme-toggle-container {
+    width: 100%;
+    text-align: right;
+    padding-right: 2px;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    border: 1px solid #eee;
+    border-radius: 30px;
+}
+
+.theme-toggle-track {
+    position: relative;
+    width: 60px;
+    height: 24px; 
+    border-radius: 35px;
+    background: #e8e8e8;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    /* Neumorphic 陰影效果 */
+    box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 深色模式背景 */
+.theme-toggle.dark .theme-toggle-track {
+    background: #2a2a2a;
+    box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.05),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease;
+}
+
+/* 淺色模式背景 - 雲朵天空 */
+.light-background {
+    opacity: 1;
+    background: linear-gradient(135deg, #a8d5e2 0%, #c5e3f0 50%, #d4ebf5 100%);
+}
+
+.theme-toggle.dark .light-background {
+    opacity: 0;
+}
+
+.clouds {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50px;
+    opacity: 0.8;
+}
+
+.cloud:before,
+.cloud:after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50px;
+}
+
+/* 雲朵 1 - 左側大雲 */
+.cloud-1 {
+    width: 15px;
+    height: 8px;
+    top: 20px;
+    left: 36px;
+}
+
+.cloud-1:before {
+    width: 22px;
+    height: 12px;
+    top: -12px;
+    left: 5px;
+}
+
+.cloud-1:after {
+    width: 20px;
+    height: 20px;
+    top: -8px;
+    right: 5px;
+}
+
+/* 雲朵 2 - 中間雲 */
+.cloud-2 {
+    width: 30px;
+    height: 18px;
+    top: 20px;
+    left: 50px;
+    opacity: 0.6;
+}
+
+.cloud-2:before {
+    width: 22px;
+    height: 22px;
+    top: -10px;
+    left: 4px;
+}
+
+.cloud-2:after {
+    width: 18px;
+    height: 18px;
+    top: -6px;
+    right: 4px;
+}
+
+/* 雲朵 3 - 右側淺藍色雲 */
+.cloud-3 {
+    width: 28px;
+    height: 16px;
+    top: 30px;
+    right: 20px;
+    background: rgba(173, 216, 230, 0.8);
+}
+
+.cloud-3:before {
+    width: 20px;
+    height: 20px;
+    top: -10px;
+    left: 3px;
+}
+
+.cloud-3:after {
+    width: 16px;
+    height: 16px;
+    top: -6px;
+    right: 3px;
+}
+
+/* 雲朵 4 - 小雲 */
+.cloud-4 {
+    width: 20px;
+    height: 12px;
+    top: 15px;
+    right: 45px;
+    opacity: 0.5;
+}
+
+.cloud-4:before {
+    width: 15px;
+    height: 15px;
+    top: -8px;
+    left: 2px;
+}
+
+/* 深色模式背景 - 星星和月亮 */
+.dark-background {
+    opacity: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+}
+
+.theme-toggle.dark .dark-background {
+    opacity: 1;
+}
+
+/* 星星容器 */
+.stars-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+
+.star {
+    position: absolute;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0.9;
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+.star-1 {
+    top: 10px;
+    left: 20px;
+    animation-delay: 0s;
+}
+
+.star-2 {
+    top: 2px;
+    left: 10px;
+    animation-delay: 0.3s;
+    font-size: 8px;
+}
+
+.star-3 {
+    top: 0px;
+    right: 5px;
+    animation-delay: 0.6s;
+    font-size: 9px;
+}
+
+.star-4 {
+    top: 30px;
+    left: 40px;
+    animation-delay: 0.9s;
+    font-size: 7px;
+}
+
+.star-5 {
+    top: 35px;
+    left: 25px;
+    animation-delay: 1.2s;
+    font-size: 8px;
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+    }
+}
+
+/* 月亮 */
+.moon {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    right: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #d4d4d4 0%, #b8b8b8 100%);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.moon-crater {
+    position: absolute;
+    background: rgba(150, 150, 150, 0.6);
+    border-radius: 50%;
+}
+
+.crater-1 {
+    width: 6px;
+    height: 6px;
+    top: 10px;
+    left: 12px;
+}
+
+.crater-2 {
+    width: 4px;
+    height: 4px;
+    top: 18px;
+    right: 10px;
+}
+
+.crater-3 {
+    width: 5px;
+    height: 5px;
+    bottom: 12px;
+    left: 15px;
+}
+
+/* 切換滑塊 - 淺黃綠色 */
+.theme-toggle-thumb {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+     background: linear-gradient(135deg, #e8e89d 0%, #e8e4a8 50%, #e8e4a8 100%);
+    top: 0px;
+    left: 2px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Neumorphic 陰影效果 */
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.theme-toggle-thumb:hover {
+    transform: scale(1.1)
+}
+
+.theme-toggle.dark .theme-toggle-thumb {
+     left: calc(100% - 27px);
+     opacity: 0.2;
+    background: linear-gradient(135deg, #eee 0%, #eee 50%, #eee 100%);     
+}
+
+.theme-toggle.dark .theme-toggle-thunmb:hover {
+    transform: scale(1.1)
+}
+
+/* 懸停效果 */
+.theme-toggle:hover .theme-toggle-track {
+    transform: scale(1.02);
+}
+
+.theme-toggle:active .theme-toggle-thumb {
+    transform: scale(0.95);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .theme-toggle-track {
+        width: 120px;
+        height: 60px;
+        border-radius: 30px;
+    }
+    
+    .theme-toggle-thumb {
+        width: 50px;
+        height: 50px;
+        top: 5px;
+        left: 5px;
+    }
+    
+    .theme-toggle.dark .theme-toggle-thumb {
+        left: calc(100% - 55px);
+    }
+    
+    .moon {
+        width: 30px;
+        height: 30px;
+        right: 12px;
+    }
+    
+    .star {
+        font-size: 8px;
+    }
+}
+
