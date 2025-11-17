@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx --watch src/index.ts"
+    "dev": "tsx --watch src/index.ts",
+    "build": "echo 'No build step required'"
   },
   "keywords": [],
   "author": "",
