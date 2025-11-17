@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { apiClient } from '../../lib/apiConfig'
 import './FormGenerator.css'
 import { FollowerPointerCard } from '../FollowingPointer'
 import pawIcon from '../../assets/icon/paw.png'
@@ -153,7 +153,7 @@ function FormGenerator() {
                 questions: filteredQuestions
             }
 
-            const response = await axios.post('/api/forms/create', formData)
+            const response = await apiClient.post('/api/forms/create', formData)
             setFormLink(response.data.formUrl)
         } catch (err: any) {
             setError(err.response?.data?.error || '建立表單時發生錯誤')
@@ -224,7 +224,7 @@ function FormGenerator() {
 
     const checkAuthStatus = async () => {
         try {
-            const response = await axios.get('/auth/status')
+            const response = await apiClient.get('/auth/status')
             setIsAuthenticated(response.data.authenticated)
         } catch (error) {
             setIsAuthenticated(false)
@@ -235,7 +235,7 @@ function FormGenerator() {
 
     const handleGoogleAuth = async () => {
         try {
-            const response = await axios.get('/auth/google')
+            const response = await apiClient.get('/auth/google')
             window.location.href = response.data.authUrl
         } catch (error: any) {
             setError('無法取得認證連結: ' + (error.message || '未知錯誤'))
