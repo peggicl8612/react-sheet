@@ -5,7 +5,27 @@ import { FollowerPointerCard } from '../FollowingPointer'
 import pawIcon from '../../assets/icon/paw.png'
 import {FORM_TEMPLATES} from '../../../../shared/templates/formTemplates'
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle'
- 
+/* 拖曳排序 */
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+  } from '@dnd-kit/core'
+  import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+  } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import {validateForm, formatValidationErrors} from '../../lib/formValidation'
+  
+
 interface Question {
   id: number
   text: string
@@ -97,6 +117,16 @@ function FormGenerator() {
         setError('')
         setFormLink('')
 
+        // 驗證表單資料
+        const validationResult = validateForm(questions, formTitle)
+        if (!validationResult.isValid) {
+            // 格式化並顯示驗證錯誤
+            const errorMessage = formatValidationErrors(validationResult.errors)
+            setError(errorMessage)
+            setLoading(false)
+            return
+        }
+
         try {
             // 過濾問題並確保選項正確傳遞
             const filteredQuestions = questions
@@ -132,6 +162,31 @@ function FormGenerator() {
             setLoading(false)
         }
     }
+
+    // 拖曳排序
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event
+        
+        if (over && active.id !== over.id) {
+            setQuestions((items) => {
+                const oldIndex = items.findIndex((item) => item.id === active.id)
+                const newIndex = items.findIndex((item) => item.id === over.id)
+                return arrayMove(items, oldIndex, newIndex)
+            })
+        }
+    }
+    
+    // 設定感應器 - 只在拖曳手柄上啟動，避免與輸入框衝突
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8, // 移動 8px 後才啟動拖曳，避免誤觸
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    )
 
     // 選擇模板
     const [selectedTemplate, setSelectedTemplate] = useState<string>('empty-form')
@@ -275,81 +330,38 @@ function FormGenerator() {
                                 </label>
                             </div>
 
-                            <div className="questions-section">
-                                <div className="section-header">
-                                    <button type="button" onClick={addQuestion} className="btn-add">
-                                        + 新增問題
-                                    </button>
-                                </div>
-
-                                {questions.map((question, index) => (
-                                    <div key={question.id} className="question-item">
-                                        <div className="question-header">
-                                            <span className="question-number">問題 {index + 1}</span>
-                                            {questions.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeQuestion(question.id)}
-                                                    className="btn-remove"
-                                                >
-                                                刪除
-                                                </button>
-                                            )}
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SortableContext
+                                    items={questions.map(q => q.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    <div className="questions-section">
+                                        <div className="section-header">
+                                            <button type="button" onClick={addQuestion} className="btn-add">
+                                                + 新增問題
+                                            </button>
                                         </div>
-                                        <input
-                                            type="text"
-                                            value={question.text}
-                                            onChange={(e) => updateQuestion(question.id, 'text', e.target.value)}
-                                            placeholder="輸入問題內容..."
-                                            className="question-input"
-                                        />
-                                        <select
-                                            value={question.type}
-                                            onChange={(e) => updateQuestion(question.id, 'type', e.target.value)}
-                                            className="question-type"
-                                        >
-                                            <option value="text">簡答</option>
-                                            <option value="multipleChoice">單選</option>
-                                            <option value="checkbox">複選</option>
-                                            <option value="date">日期</option>
-                                         </select>
 
-                                        {/* 選項輸入區域 */}
-                                        {(question.type === 'multipleChoice' || question.type === 'checkbox') && (
-                                            <div className="options-section">
-                                                <label className="options-label">選項：</label>
-                                                {question.options?.map((option, optIndex) => (
-                                                    <div key={optIndex} className="option-item">
-                                                        <input
-                                                            type="text"
-                                                            value={option}
-                                                            onChange={(e) => updateOption(question.id, optIndex, e.target.value)}
-                                                            placeholder={`選項 ${optIndex + 1}`}
-                                                            className="option-input"
-                                                        />
-                                                        {question.options && question.options.length > 2 && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => removeOption(question.id, optIndex)}
-                                                                className="btn-remove-option"
-                                                            >
-                                                                x
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => addOption(question.id)}
-                                                    className="btn-add-option"
-                                                >
-                                                    + 新增選項
-                                                </button>
-                                            </div>
-                                        )}
+                                        {questions.map((question, index) => (
+                                            <SortableQuestionItem
+                                                key={question.id}
+                                                question={question}
+                                                index={index}
+                                                questions={questions}
+                                                updateQuestion={updateQuestion}
+                                                removeQuestion={removeQuestion}
+                                                addOption={addOption}
+                                                removeOption={removeOption}
+                                                updateOption={updateOption}
+                                            />
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </SortableContext>
+                            </DndContext>
 
                             <div className="submit-section">
                             <button type="submit" disabled={loading} className="btn-submit">
@@ -364,44 +376,30 @@ function FormGenerator() {
 
                             {formLink && (
                                 <div className="success-message">
-                                    <h3>表單建立成功！</h3>
-                                    <p>您的表單連結：</p>
-                                    <a href={formLink} target="_blank" rel="noopener noreferrer" className="form-link">
-                                        {formLink}
-                            </a>
-                            <div style={{ marginTop: '15px', padding: '15px', background: '#f0f7ff', borderRadius: '6px', border: '1px solid #b3d9ff' }}>
-            <p style={{ margin: '0 0 10px 0', fontWeight: '600', color: '#0066cc' }}>需要新增檔案上傳功能？</p>
-            <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>
-                由於 Google Forms API 限制，檔案上傳問題需要手動新增：
-            </p>
-            <ol style={{ margin: '0 0 10px 0', paddingLeft: '20px', fontSize: '14px', color: '#333' }}>
- 
-            </ol>
-                <a 
-                    href={formLink.replace('/viewform', '/edit')} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{
-                        display: 'inline-block',
-                        padding: '8px 16px',
-                        background: '#0066cc',
-                        color: 'white',
-                        textDecoration: 'none',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        fontWeight: '600'
-                    }}
-                >
-                    編輯表單
-                </a>
-        </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => navigator.clipboard.writeText(formLink)}
-                                        className="btn-copy"
-                                    >
-                                        複製連結
-                                    </button>
+                                    <h3>✓ 表單建立成功！</h3>
+                                    <div className="form-link-section">
+                                        <p className="form-link-label">您的表單連結：</p>
+                                        <a href={formLink} target="_blank" rel="noopener noreferrer" className="form-link">
+                                            {formLink}
+                                        </a>
+                                    </div>
+                                    <div className="success-actions">
+                                        <button
+                                            type="button"
+                                            onClick={() => navigator.clipboard.writeText(formLink)}
+                                            className="btn-copy"
+                                        >
+                                            複製連結
+                                        </button>
+                                        <a 
+                                            href={formLink.replace('/viewform', '/edit')} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="btn-edit-form"
+                                        >
+                                            編輯表單
+                                        </a>
+                                    </div>
                                 </div>
                             )}
                         </form>
@@ -409,6 +407,116 @@ function FormGenerator() {
         </FollowerPointerCard>
       )
      
+}
+
+// 可拖曳的問題項目組件
+function SortableQuestionItem({ 
+    question, 
+    index, 
+    questions, 
+    updateQuestion, 
+    removeQuestion, 
+    addOption, 
+    removeOption, 
+    updateOption 
+}: {
+    question: Question
+    index: number
+    questions: Question[]
+    updateQuestion: (id: number, field: string, value: string) => void
+    removeQuestion: (id: number) => void
+    addOption: (questionId: number) => void
+    removeOption: (questionId: number, optionIndex: number) => void
+    updateOption: (questionId: number, optionIndex: number, value: string) => void
+}) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: question.id })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition: isDragging ? 'none' : transition, // 拖曳時禁用 transition 避免變形
+        opacity: isDragging ? 0.5 : 1,
+        width: '100%',
+        boxSizing: 'border-box' as const,
+        position: 'relative' as const,
+    }
+
+    return (
+        <div ref={setNodeRef} style={style} className={`question-item ${isDragging ? 'dragging' : ''}`}>
+            <div className="question-header">
+                <div className="drag-handle" {...attributes} {...listeners}>
+                    <span className="drag-icon">☰</span>
+                </div>
+                <span className="question-number">問題 {index + 1}</span>
+                {questions.length > 1 && (
+                    <button
+                        type="button"
+                        onClick={() => removeQuestion(question.id)}
+                        className="btn-remove"
+                    >
+                        刪除
+                    </button>
+                )}
+            </div>
+            <input
+                type="text"
+                value={question.text}
+                onChange={(e) => updateQuestion(question.id, 'text', e.target.value)}
+                placeholder="輸入問題內容..."
+                className="question-input"
+            />
+            <select
+                value={question.type}
+                onChange={(e) => updateQuestion(question.id, 'type', e.target.value)}
+                className="question-type"
+            >
+                <option value="text">簡答</option>
+                <option value="multipleChoice">單選</option>
+                <option value="checkbox">複選</option>
+                <option value="date">日期</option>
+            </select>
+
+            {/* 選項輸入區域 */}
+            {(question.type === 'multipleChoice' || question.type === 'checkbox') && (
+                <div className="options-section">
+                    <label className="options-label">選項：</label>
+                    {question.options?.map((option, optIndex) => (
+                        <div key={optIndex} className="option-item">
+                            <input
+                                type="text"
+                                value={option}
+                                onChange={(e) => updateOption(question.id, optIndex, e.target.value)}
+                                placeholder={`選項 ${optIndex + 1}`}
+                                className="option-input"
+                            />
+                            {question.options && question.options.length > 2 && (
+                                <button
+                                    type="button"
+                                    onClick={() => removeOption(question.id, optIndex)}
+                                    className="btn-remove-option"
+                                >
+                                    x
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={() => addOption(question.id)}
+                        className="btn-add-option"
+                    >
+                        + 新增選項
+                    </button>
+                </div>
+            )}
+        </div>
+    )
 }
 
 export default FormGenerator
