@@ -1,7 +1,7 @@
 import { createGoogleForm } from '../config/googleAuth'
 import { emailService } from './emailServe'
 import { emailLogModel } from '../models/EmailLog'
-import {getDefaultTemplate, getTemplateById} from '../../../shared/templates/formTemplates'
+import {getDefaultTemplate, getTemplateById} from '../templates/formTemplates.js'
 
 export interface OrderCompletedEvent {
     orderId: string
