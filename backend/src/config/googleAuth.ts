@@ -18,6 +18,7 @@ const oauth2Client = new google.auth.OAuth2(
 // 載入已儲存的 token
 export function loadSavedToken() {
     try {
+        // 檢查 token 是否存在
         if (fs.existsSync(TOKEN_PATH)) { 
             const token = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'))
             oauth2Client.setCredentials(token)
@@ -113,7 +114,7 @@ export async function createGoogleForm({ title, description, questions }: any) {
   
         const formId = formResponse.data.formId
         
-        // 如果有 description，使用 batchUpdate 更新表單描述
+ // 如果有 description，使用 batchUpdate 更新表單描述
  if (description && description.trim() !== '') {
     await forms.forms.batchUpdate({
         formId: formId as string,
@@ -131,9 +132,34 @@ export async function createGoogleForm({ title, description, questions }: any) {
 }
 
   
-      // 新增問題到表單
-      for (let i = 0; i < questions.length; i++) {
-        await addQuestionToForm(formId as string, questions[i], forms, i)
+      // 新增問題到表單（批次處理）
+      if (questions && questions.length > 0) {
+          const requests = questions.map((question, index) => {
+              const questionItem = getQuestionItem(
+                  question.type,
+                  question.options,
+                  question.required !== undefined ? question.required : false
+              )
+              
+              return {
+                  createItem: {
+                      item: {
+                          title: question.text,
+                          questionItem: questionItem
+                      },
+                      location: {
+                          index: index
+                      }
+                  }
+              }
+          })
+
+          await forms.forms.batchUpdate({
+              formId: formId as string,
+              requestBody: {
+                  requests: requests
+              }
+          })
       }
   
       // 回傳表單連結
@@ -143,45 +169,7 @@ export async function createGoogleForm({ title, description, questions }: any) {
       throw new Error(`無法建立表單: ${error.message || '未知錯誤'}`)
     }
 }
-  
-// 新增問題到表單
-async function addQuestionToForm(formId: string, question: any, forms: any, index: number) {
-    try {
-        // 除錯：記錄問題資料
-        console.log('Adding question:', {
-            type: question.type,
-            text: question.text,
-            options: question.options,
-            required: question.required
-        })
-
-        const questionItem = getQuestionItem(question.type, question.options, question.required !== undefined ? question.required : false)
-        console.log('Generated questionItem:', JSON.stringify(questionItem, null, 2))
-
-        const questionConfig = {
-            requests: [{
-                createItem: {
-                    item: {
-                        title: question.text,
-                        questionItem: questionItem
-                    },
-                    location: {
-                        index: index
-                    }
-                }
-            }]
-        }
-
-        await forms.forms.batchUpdate({
-            formId: formId,
-            requestBody: questionConfig
-        })
-    } catch (error: any) {
-        console.error('Error adding question to form:', error)
-        throw new Error(`無法新增問題: ${error.message || '未知錯誤'}`)
-    }
-}
-
+ 
 function getQuestionItem(type: string, options?: string[], required?: boolean) {
     switch (type) {
         case 'text':

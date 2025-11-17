@@ -7,8 +7,7 @@ export interface OrderCompletedEvent {
     orderId: string
     customerEmail: string
     customerName?: string
-    orderDetails?: any
-    templateId?: string // 可指定模板 ID
+     templateId?: string // 可指定模板 ID
 }
 
 const getFormTemplate = (orderId: string, customerName?: string, templateId?: string) => {
@@ -37,7 +36,7 @@ const getFormTemplate = (orderId: string, customerName?: string, templateId?: st
 
 // 處理訂單完成事件
 export const handleOrderCompleted = async (event: OrderCompletedEvent) => {
-    const { orderId, customerEmail, customerName, orderDetails } = event
+    const { orderId, customerEmail, customerName } = event
 
     try {
         // 步驟 1: 建立 Google 表單
@@ -108,8 +107,7 @@ export const handleOrderCompleted = async (event: OrderCompletedEvent) => {
             status: 'success',
         })
 
-        console.log(`[訂單完成] 紀錄已儲存到 MongoDB`)
-
+  
         return {
             success: true,
             formUrl,
@@ -130,8 +128,7 @@ export const handleOrderCompleted = async (event: OrderCompletedEvent) => {
             console.log(`[訂單完成] 失敗記錄已儲存到 MongoDB`)
         } catch (dbError: any) {
             console.error('記錄失敗資訊到資料庫時發生錯誤:', dbError)
-            // 即使資料庫記錄失敗，也不影響主要錯誤的拋出
-        }
+         }
 
         throw error
     }

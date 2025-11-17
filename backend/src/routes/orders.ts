@@ -6,7 +6,7 @@ const router = express.Router()
 // 訂單完成事件 API
 router.post('/completed', async (req: any, res: any) => {
     try {
-        const { orderId, customerEmail, customerName, orderDetails } = req.body
+        const { orderId, customerEmail, customerName } = req.body
 
         if (!orderId || !customerEmail) {
             return res.status(400).json({
@@ -18,8 +18,7 @@ router.post('/completed', async (req: any, res: any) => {
             orderId,
             customerEmail,
             customerName,
-            orderDetails,
-        }
+         }
 
         const result = await handleOrderCompleted(event)
 
