@@ -2,9 +2,17 @@
 
 一個全端應用程式，用於自動建立 Google Forms 表單，支援手動建立和訂單完成後自動化流程。
 
+## 🌐 線上版本
+
+- **前端應用**：https://react-sheet-wvmz.vercel.app/
+- **後端 API**：https://peggy-google-form-generator.onrender.com
+
+> 💡 **提示**：線上版本已部署並可直接使用，無需本地安裝即可體驗完整功能！
+
 ## 📋 專案簡介
 
 本專案提供了一個完整的 Google Forms 自動生成解決方案，包含：
+
 - **前端介面**：直觀的表單建立工具，支援多種問題類型和模板
 - **後端 API**：處理 Google OAuth 認證、表單建立、郵件發送等功能
 - **自動化流程**：訂單完成後自動建立表單並發送郵件給客戶
@@ -31,6 +39,7 @@ wip: 開發中
 ## ✨ 主要功能
 
 ### 前端功能
+
 - Google OAuth 認證整合
 - 視覺化表單建立介面
 - 多種問題類型支援（簡答、單選、複選、日期）
@@ -39,6 +48,7 @@ wip: 開發中
 - 即時表單預覽和連結生成
 
 ### 後端功能
+
 - Google Forms API 整合
 - OAuth 2.0 認證與 Token 管理
 - 批次處理表單問題（優化效能）
@@ -50,6 +60,7 @@ wip: 開發中
 ## 🛠 技術棧
 
 ### 前端
+
 - **框架**: React 19 + TypeScript
 - **建置工具**: Vite 7
 - **樣式**: Tailwind CSS 4
@@ -57,6 +68,7 @@ wip: 開發中
 - **HTTP 客戶端**: Axios
 
 ### 後端
+
 - **框架**: Node.js + Express 5
 - **語言**: TypeScript
 - **資料庫**: MongoDB (Mongoose)
@@ -105,9 +117,15 @@ react-sheet/
 
 ## 🚀 快速開始
 
-### 前置需求
+### 方式一：使用線上版本（推薦）
 
-- Node.js 18+ 
+直接訪問 [https://react-sheet-wvmz.vercel.app/](https://react-sheet-wvmz.vercel.app/) 即可使用，無需安裝！
+
+### 方式二：本地開發
+
+#### 前置需求
+
+- Node.js 18+
 - MongoDB 資料庫
 - Google Cloud Platform 專案（用於 OAuth）
 - Gmail 應用程式密碼（用於郵件發送）
@@ -168,6 +186,7 @@ npm run dev
 ```
 
 應用程式將在以下位置運行：
+
 - 前端：http://localhost:5173
 - 後端：http://localhost:3001
 
@@ -242,12 +261,14 @@ npm run dev
 ### 自動化流程（訂單完成）
 
 當訂單完成時，系統會自動：
+
 1. 根據模板建立 Google 表單
 2. 準備 HTML 郵件內容
 3. 透過 Gmail SMTP 發送郵件給客戶
 4. 記錄到 MongoDB 資料庫
 
 範例 API 呼叫：
+
 ```bash
 curl -X POST http://localhost:3001/api/orders/completed \
   -H "Content-Type: application/json" \
@@ -265,6 +286,7 @@ curl -X POST http://localhost:3001/api/orders/completed \
 專案使用 Google Forms API 的 `batchUpdate` 方法進行批次處理，將所有問題合併到一次 API 呼叫中：
 
 **優勢：**
+
 - ✅ **效能提升**：減少 API 呼叫次數（從 N 次減少到 1 次）
 - ✅ **原子性**：所有操作要麼全部成功，要麼全部失敗
 - ✅ **降低延遲**：減少網路往返時間
@@ -279,6 +301,7 @@ curl -X POST http://localhost:3001/api/orders/completed \
 ### 表單模板系統
 
 模板定義在 `shared/templates/formTemplates.ts`，包含：
+
 - 空白表單
 - 客戶滿意度調查表
 - 產品意見表
@@ -303,6 +326,36 @@ npm run dev    # 開發伺服器
 npm run build  # 建置生產版本
 npm run preview # 預覽生產版本
 ```
+
+## 🚢 部署說明
+
+### 前端部署（Vercel）
+
+1. 將專案推送到 GitHub
+2. 在 [Vercel](https://vercel.com) 匯入專案
+3. 設定 Root Directory 為 `frontend`
+4. 新增環境變數：
+   - `VITE_API_URL` = `https://peggy-google-form-generator.onrender.com`
+5. 部署完成
+
+### 後端部署（Render）
+
+1. 在 [Render](https://render.com) 建立新的 Web Service
+2. 連接 GitHub 儲存庫
+3. 設定：
+   - Build Command: `cd backend && npm install`
+   - Start Command: `cd backend && npm start`
+   - Root Directory: `backend`
+4. 新增環境變數：
+   - `FRONTEND_URL` = `https://react-sheet-wvmz.vercel.app`
+   - `GOOGLE_REDIRECT_URI` = `https://peggy-google-form-generator.onrender.com/auth/google/callback`
+   - `GOOGLE_CLIENT_ID` = 你的 Google Client ID
+   - `GOOGLE_CLIENT_SECRET` = 你的 Google Client Secret
+   - `MONGODB_URI` = 你的 MongoDB 連線字串
+   - `GMAIL_USER` = 你的 Gmail 帳號
+   - `GMAIL_APP_PASSWORD` = 你的 Gmail 應用程式密碼
+5. 上傳 `backend/client-secret.json` 到 Render（透過環境變數或 Secrets）
+6. 在 Google Cloud Console 新增 Redirect URI：`https://peggy-google-form-generator.onrender.com/auth/google/callback`
 
 ## 🔒 安全性注意事項
 
